@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RetailPulse | Business Intelligence</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --ink:#17122b; --muted:#6b6780; --card:#fff; --bg:#f5f3f9; --accent:#6d35d8; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif; background:var(--bg); color:var(--ink); }
+    .shell { max-width:1320px; margin:auto; padding:34px 24px 60px; }
+    header { display:flex; justify-content:space-between; gap:24px; align-items:end; margin-bottom:28px; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.14em; font-size:12px; font-weight:800; color:var(--accent); }
+    h1 { font-size:42px; line-height:1; margin:8px 0; letter-spacing:-.04em; }
+    .subtitle { color:var(--muted); max-width:700px; }
+    .badge { padding:9px 13px; border-radius:999px; background:#ece5ff; color:#5b25c7; font-weight:700; font-size:13px; }
+    .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px; }
+    .card { background:var(--card); border:1px solid #e8e4ef; border-radius:18px; padding:20px; box-shadow:0 8px 30px rgba(30,15,60,.04); }
+    .label { color:var(--muted); font-size:13px; font-weight:700; }
+    .value { font-size:29px; font-weight:850; margin-top:8px; }
+    .grid { display:grid; grid-template-columns:1.6fr 1fr; gap:16px; margin-top:16px; }
+    .grid.equal { grid-template-columns:1fr 1fr; }
+    h2 { font-size:17px; margin:0 0 16px; }
+    canvas { max-height:320px; }
+    footer { color:var(--muted); font-size:12px; margin-top:22px; }
+    @media(max-width:900px){ .kpis{grid-template-columns:1fr 1fr}.grid,.grid.equal{grid-template-columns:1fr} header{display:block} }
+    @media(max-width:520px){ .kpis{grid-template-columns:1fr} h1{font-size:34px} }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div><div class="eyebrow">RetailPulse Analytics</div><h1>Decision-ready retail intelligence.</h1><div class="subtitle">An interactive demonstration of the end-to-end analytics workflow: data preparation, KPI analysis and business visualization.</div></div>
+    <div class="badge">Synthetic dataset • Portfolio project</div>
+  </header>
+  <section class="kpis">
+    <div class="card"><div class="label">TOTAL REVENUE</div><div id="revenue" class="value">—</div></div>
+    <div class="card"><div class="label">TOTAL PROFIT</div><div id="profit" class="value">—</div></div>
+    <div class="card"><div class="label">ORDERS</div><div id="orders" class="value">—</div></div>
+    <div class="card"><div class="label">PROFIT MARGIN</div><div id="margin" class="value">—</div></div>
+  </section>
+  <section class="grid">
+    <div class="card"><h2>Revenue & profit trend</h2><canvas id="trend"></canvas></div>
+    <div class="card"><h2>Revenue by category</h2><canvas id="category"></canvas></div>
+  </section>
+  <section class="grid equal">
+    <div class="card"><h2>Regional performance</h2><canvas id="region"></canvas></div>
+    <div class="card"><h2>Sales channel mix</h2><canvas id="channel"></canvas></div>
+  </section>
+  <section class="card" style="margin-top:16px"><h2>Top products by revenue</h2><canvas id="products"></canvas></section>
+  <footer>RetailPulse Analytics • Built for academic and portfolio demonstration • Data is synthetic and reproducible.</footer>
+</div>
+<script>
+const money = n => '₹' + new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(n);
+const common = { responsive:true, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>money(v)}}} };
+Promise.all([fetch('/api/summary').then(r=>r.json()), fetch('/api/charts').then(r=>r.json())]).then(([s,d])=>{
+  document.querySelector('#revenue').textContent=money(s.revenue); document.querySelector('#profit').textContent=money(s.profit); document.querySelector('#orders').textContent=s.orders.toLocaleString('en-IN'); document.querySelector('#margin').textContent=s.margin+'%';
+  new Chart(document.getElementById('trend'),{type:'line',data:{labels:d.monthly.map(x=>x.month),datasets:[{label:'Revenue',data:d.monthly.map(x=>x.revenue),tension:.3},{label:'Profit',data:d.monthly.map(x=>x.profit),tension:.3}]},options:common});
+  new Chart(document.getElementById('category'),{type:'bar',data:{labels:d.category.map(x=>x.category),datasets:[{label:'Revenue',data:d.category.map(x=>x.revenue)}]},options:{...common,indexAxis:'y'}});
+  new Chart(document.getElementById('region'),{type:'bar',data:{labels:d.region.map(x=>x.region),datasets:[{label:'Revenue',data:d.region.map(x=>x.revenue)},{label:'Profit',data:d.region.map(x=>x.profit)}]},options:common});
+  new Chart(document.getElementById('channel'),{type:'doughnut',data:{labels:d.channel.map(x=>x.channel),datasets:[{data:d.channel.map(x=>x.revenue)}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+  new Chart(document.getElementById('products'),{type:'bar',data:{labels:d.products.map(x=>x.product_name),datasets:[{label:'Revenue',data:d.products.map(x=>x.revenue)}]},options:{...common,indexAxis:'y'}});
+}).catch(err=>console.error(err));
+</script>
+</body>
+</html>
