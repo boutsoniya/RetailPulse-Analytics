@@ -39,18 +39,12 @@ PRODUCTS = [
 ]
 
 LOCATIONS = [
-    ("Jaipur", "Rajasthan", "North"),
-    ("Delhi", "Delhi", "North"),
-    ("Lucknow", "Uttar Pradesh", "North"),
-    ("Mumbai", "Maharashtra", "West"),
-    ("Ahmedabad", "Gujarat", "West"),
-    ("Pune", "Maharashtra", "West"),
-    ("Kolkata", "West Bengal", "East"),
-    ("Bhubaneswar", "Odisha", "East"),
-    ("Patna", "Bihar", "East"),
-    ("Bengaluru", "Karnataka", "South"),
-    ("Hyderabad", "Telangana", "South"),
-    ("Chennai", "Tamil Nadu", "South"),
+    ("Jaipur", "Rajasthan", "North"), ("Delhi", "Delhi", "North"),
+    ("Lucknow", "Uttar Pradesh", "North"), ("Mumbai", "Maharashtra", "West"),
+    ("Ahmedabad", "Gujarat", "West"), ("Pune", "Maharashtra", "West"),
+    ("Kolkata", "West Bengal", "East"), ("Bhubaneswar", "Odisha", "East"),
+    ("Patna", "Bihar", "East"), ("Bengaluru", "Karnataka", "South"),
+    ("Hyderabad", "Telangana", "South"), ("Chennai", "Tamil Nadu", "South"),
 ]
 
 PAYMENT_METHODS = ["UPI", "Credit Card", "Debit Card", "Net Banking", "Cash"]
@@ -61,28 +55,27 @@ def main() -> None:
     rng = np.random.default_rng(SEED)
     dates = pd.date_range(START_DATE, END_DATE, freq="D")
 
-    # Customer master attributes are generated once so repeated purchases
-    # retain coherent demographic and geographic information.
     customer_ids = np.array([f"C{i:05d}" for i in range(1, 5001)])
     customer_names = np.array([f"Customer {i:05d}" for i in range(1, 5001)])
     customer_gender = rng.choice(["Female", "Male", "Other"], len(customer_ids), p=[0.47, 0.51, 0.02])
     customer_age = rng.integers(18, 66, len(customer_ids))
     location_idx = rng.integers(0, len(LOCATIONS), len(customer_ids))
 
-    # Weighted sampling gives a realistic long tail of customer activity.
     customer_weights = rng.pareto(1.7, len(customer_ids)) + 0.25
-    customer_weights = customer_weights / customer_weights.sum()
+    customer_weights /= customer_weights.sum()
     customer_idx = rng.choice(len(customer_ids), N_TRANSACTIONS, p=customer_weights)
 
     date_idx = rng.integers(0, len(dates), N_TRANSACTIONS)
     order_dates = dates[date_idx]
 
-    product_idx = rng.choice(len(PRODUCTS), N_TRANSACTIONS, p=np.array([
-        0.08, 0.055, 0.075, 0.065, 0.055, 0.045,
-        0.055, 0.045, 0.035, 0.045, 0.04, 0.035,
-        0.055, 0.045, 0.045, 0.06, 0.045, 0.035,
-        0.04, 0.03,
-    ]))
+    # The raw weights intentionally describe product mix; normalize them so
+    # the generator remains robust if a weight is edited later.
+    product_weights = np.array([
+        0.08, 0.055, 0.075, 0.065, 0.055, 0.045, 0.055, 0.045, 0.035, 0.045,
+        0.04, 0.035, 0.055, 0.045, 0.045, 0.06, 0.045, 0.035, 0.04, 0.03,
+    ], dtype=float)
+    product_weights /= product_weights.sum()
+    product_idx = rng.choice(len(PRODUCTS), N_TRANSACTIONS, p=product_weights)
 
     month = order_dates.month.to_numpy()
     seasonality = np.where(np.isin(month, [10, 11, 12]), 1.18, 1.0)
@@ -94,21 +87,18 @@ def main() -> None:
 
     rows = []
     for i in range(N_TRANSACTIONS):
-        ci = customer_idx[i]
-        pi = product_idx[i]
+        ci, pi = customer_idx[i], product_idx[i]
         city, state, region = LOCATIONS[location_idx[ci]]
         product = PRODUCTS[pi]
-        unit_price = product[4]
-        unit_cost = product[5]
+        unit_price, unit_cost = product[4], product[5]
         revenue = quantity[i] * unit_price * (1 - discount[i])
         cost = quantity[i] * unit_cost
         rows.append([
             f"ORD{i + 1:07d}", order_dates[i].date(), customer_ids[ci], customer_names[ci],
-            customer_gender[ci], int(customer_age[ci]), city, state, region,
-            channel[i], product[0], product[1], product[2], product[3],
-            int(quantity[i]), unit_price, round(float(discount[i] * 100), 2),
-            round(float(revenue), 2), unit_cost, round(float(cost), 2),
-            round(float(revenue - cost), 2), payment[i],
+            customer_gender[ci], int(customer_age[ci]), city, state, region, channel[i],
+            product[0], product[1], product[2], product[3], int(quantity[i]), unit_price,
+            round(float(discount[i] * 100), 2), round(float(revenue), 2), unit_cost,
+            round(float(cost), 2), round(float(revenue - cost), 2), payment[i],
         ])
 
     columns = [
@@ -117,13 +107,11 @@ def main() -> None:
         "category", "subcategory", "quantity", "unit_price", "discount_pct",
         "revenue", "unit_cost", "cost", "profit", "payment_method",
     ]
-
     df = pd.DataFrame(rows, columns=columns)
     output_dir = Path(__file__).resolve().parents[1] / "data" / "raw"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "retail_transactions.csv"
     df.to_csv(output_path, index=False)
-
     print(f"Generated {len(df):,} transaction rows")
     print(f"Saved to: {output_path}")
 
