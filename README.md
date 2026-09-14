@@ -2,58 +2,60 @@
 
 ## End-to-End Retail Business Intelligence & Analytics System
 
-RetailPulse transforms retail transaction data into decision-ready business insights using **Python, SQL, Excel and Power BI**.
+RetailPulse is a **45-day Data Analytics internship case study** designed to demonstrate the complete journey from transaction data to validated business recommendations using **Excel, SQL, Python and Power BI-style reporting**.
 
-> **Academic / portfolio note:** the project uses synthetic retail data designed for reproducible analytics. It does not represent confidential data from WSA or any real client.
+> **Academic integrity note:** the analytical dataset is synthetic and reproducible. It is not presented as confidential WSA or client data.
 
-### Business questions
+## Business problem
 
-- How is revenue and profit trending over time?
-- Which products and categories drive revenue?
-- Which regions and channels perform best?
-- Which customers contribute the most value?
-- Where do discounts reduce profitability?
-- What sales trend can management expect next?
+A retail management team receives transaction-level data but needs a concise way to answer:
 
-## Analytics workflow
+- How much revenue and profit are being generated?
+- Which regions and categories drive performance?
+- Which customer segments have stronger basket economics?
+- How do discounts affect profitability?
+- Which products deserve attention?
+- What operational impact comes from returns and cancellations?
+
+## 45-day project architecture
 
 ```text
-Synthetic / Raw Data
-        |
-        v
-Excel + Python Data Quality Checks
-        |
-        v
-Cleaned Analytical Dataset
-        |
-        +------------------+
-        |                  |
-        v                  v
-      SQL             Python EDA
-        |                  |
-        +--------+---------+
-                 |
-                 v
-          Power BI Model
-                 |
-                 v
-     Executive Decision Dashboard
-                 |
-                 v
-     Insights + Recommendations
+Business Requirements
+        ↓
+Synthetic / Source-like Transaction Data
+        ↓
+Excel-style Profiling + Python Data Cleaning
+        ↓
+Validated Analytical Dataset
+        ↓
+SQL Data Model + Business Queries
+        ↓
+Python EDA + RFM Segmentation
+        ↓
+Power BI Model / Dashboard Specification
+        ↓
+Interactive Executive Dashboard
+        ↓
+Validation + Insights + Recommendations
 ```
 
-## Planned deliverables
+## What is actually demonstrated
 
-| Area | Deliverable |
+| Internship skill | Project evidence |
 |---|---|
-| Data | Reproducible synthetic retail dataset generator |
-| Excel | Cleaning workbook and KPI preparation |
-| Python | Cleaning, EDA, customer segmentation and forecasting |
-| SQL | Schema, loading scripts and analytical queries |
-| Power BI | Executive, Sales, Customer and Profitability pages |
-| Documentation | Data dictionary, methodology, architecture and testing |
-| Academic report | Evidence for the B.Tech practical training seminar report |
+| Data collection & cleaning | Source-like transaction data, quality issues, validation rules, cleaned dataset |
+| Excel | Profiling, cleaning logic and KPI preparation workflow |
+| SQL | Fact/dimension design, KPI, regional, category, segment and discount queries |
+| Python | Reproducible cleaning, financial recalculation, EDA-ready aggregates and RFM |
+| Power BI / Tableau | Executive dashboard layout, KPI definitions, filters and visual-selection rationale |
+| Insight generation | Category, regional, customer and profitability recommendations |
+| SDLC | Requirements → design → implementation → testing → deployment → maintenance |
+
+## Dataset
+
+The reference case-study structure uses a transaction-level retail dataset with **Order ID, Order Date, Region, Customer Segment, Category, Product, Quantity, Unit Price, Discount, Sales, Cost, Profit and Order Status**. The generator additionally carries city, state, channel and payment method to support richer analysis.
+
+The generator intentionally includes a small number of controlled data-quality issues so the cleaning stage is demonstrable rather than cosmetic. The cleaned pipeline recalculates sales/profit and treats **Completed** orders as realized sales while retaining Returned and Cancelled records for operational analysis.
 
 ## Repository structure
 
@@ -65,43 +67,67 @@ RetailPulse-Analytics/
 ├── excel/
 ├── notebooks/
 ├── python/
+│   ├── generate_retail_data.py
+│   ├── prepare_data.py
+│   ├── customer_rfm.py
+│   └── run_analysis.py
 ├── sql/
+│   ├── schema.sql
+│   └── analytics_queries.sql
 ├── powerbi/
 ├── dashboards/
 ├── docs/
 ├── reports/
 ├── screenshots/
+├── app.py
 ├── requirements.txt
 └── README.md
 ```
 
-## Technology stack
+## Key analytical layers
 
-- Python: pandas, NumPy, matplotlib, scikit-learn
-- SQL: relational modeling, joins, aggregations, CTEs and window functions
-- Excel: data quality checks, cleaning and KPI preparation
-- Power BI: Power Query, data modeling, DAX and interactive reporting
-- Git/GitHub: version control and project documentation
+### 1. Data quality
+- Missing-value detection and repair
+- Duplicate order detection
+- Date and numeric validation
+- Discount and quantity range checks
+- Recalculation of Sales and Profit
+- Before/after quality reporting
 
-## Project status
+### 2. SQL analytics
+- Executive KPIs
+- Monthly performance
+- Regional scorecard
+- Category profitability
+- Customer-segment economics
+- Discount bands
+- Product ranking
+- Order-status analysis
 
-### Phase 1 — Foundation: in progress
+### 3. Python analytics
+- Reproducible transformations
+- Descriptive EDA
+- Revenue/profit trend analysis
+- Category and regional diagnostics
+- RFM customer segmentation
+- Independent KPI validation
 
-- [x] Repository created
-- [x] Project architecture documented
-- [x] Synthetic data generation design
-- [x] SQL schema and KPI query plan
-- [x] Python analysis scaffolding
-- [ ] Generate final dataset
-- [ ] Complete EDA outputs
-- [ ] Build Excel workbook
-- [ ] Build Power BI dashboard
-- [ ] Add final screenshots
-- [ ] Complete academic report
+### 4. Dashboard
+The live application is designed as a management-facing interface rather than a collection of decorative charts. It includes filters for **region, category, customer segment and channel**, plus:
 
-## Reproducibility
+- Executive KPI strip
+- Monthly revenue and profit trend
+- Category contribution
+- Regional scorecard
+- Channel contribution
+- Customer-segment performance
+- Product ranking
+- Discount-vs-margin diagnostic
+- Category margin matrix
+- Order-status operations view
+- Auto-generated management recommendations
 
-After cloning the repository:
+## Running locally
 
 ```bash
 python -m venv .venv
@@ -111,18 +137,22 @@ python -m venv .venv
 # source .venv/bin/activate
 
 pip install -r requirements.txt
-python python/generate_retail_data.py
-python python/run_analysis.py
+python -m python.prepare_data
+python -m python.customer_rfm
+python app.py
 ```
 
-The generator uses a fixed random seed so the analytical dataset can be reproduced consistently.
+Then open the local Flask address shown in the terminal.
+
+## Validation philosophy
+
+The project follows the report methodology: calculations are validated before publication, completed orders are used for realized-sales KPIs, and regional/category/segment totals should reconcile to the overall total. This keeps the dashboard analytically defensible rather than merely visually polished.
 
 ## Academic alignment
 
-The project is intentionally structured to demonstrate the internship competencies stated on the internship certificate: data collection and cleaning, SQL, Power BI/Tableau-style visualization, insight generation, dashboard creation and SDLC-based project development.
+The project is structured around the internship competencies and report framework: company/internship context, literature-supported methodology, requirements, data preparation, SQL analysis, EDA, dashboard design, validation, professional learning, conclusion and future scope.
 
 ## Author
 
-**Soniya Rajpurohit**
-
+**Soniya Rajpurohit**  
 B.Tech Practical Training / Data Analytics Internship Project
