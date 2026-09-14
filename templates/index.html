@@ -1,67 +1,58 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RetailPulse | Business Intelligence</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    :root { --ink:#17122b; --muted:#6b6780; --card:#fff; --bg:#f5f3f9; --accent:#6d35d8; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif; background:var(--bg); color:var(--ink); }
-    .shell { max-width:1320px; margin:auto; padding:34px 24px 60px; }
-    header { display:flex; justify-content:space-between; gap:24px; align-items:end; margin-bottom:28px; }
-    .eyebrow { text-transform:uppercase; letter-spacing:.14em; font-size:12px; font-weight:800; color:var(--accent); }
-    h1 { font-size:42px; line-height:1; margin:8px 0; letter-spacing:-.04em; }
-    .subtitle { color:var(--muted); max-width:700px; }
-    .badge { padding:9px 13px; border-radius:999px; background:#ece5ff; color:#5b25c7; font-weight:700; font-size:13px; }
-    .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px; }
-    .card { background:var(--card); border:1px solid #e8e4ef; border-radius:18px; padding:20px; box-shadow:0 8px 30px rgba(30,15,60,.04); }
-    .label { color:var(--muted); font-size:13px; font-weight:700; }
-    .value { font-size:29px; font-weight:850; margin-top:8px; }
-    .grid { display:grid; grid-template-columns:1.6fr 1fr; gap:16px; margin-top:16px; }
-    .grid.equal { grid-template-columns:1fr 1fr; }
-    h2 { font-size:17px; margin:0 0 16px; }
-    canvas { max-height:320px; }
-    footer { color:var(--muted); font-size:12px; margin-top:22px; }
-    @media(max-width:900px){ .kpis{grid-template-columns:1fr 1fr}.grid,.grid.equal{grid-template-columns:1fr} header{display:block} }
-    @media(max-width:520px){ .kpis{grid-template-columns:1fr} h1{font-size:34px} }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RetailPulse Analytics | Internship Project</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root{--navy:#111827;--ink:#182033;--muted:#70798b;--bg:#f4f6fa;--card:#fff;--line:#e7eaf0;--blue:#2563eb;--purple:#7354e8;--green:#0f9f6e;--red:#e2556d;--amber:#e59a18;--shadow:0 8px 28px rgba(17,24,39,.055)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.app{display:flex;min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:230px;background:var(--navy);color:#fff;padding:24px 16px;z-index:10}.logo{font-weight:900;font-size:18px;display:flex;gap:9px;align-items:center;margin:2px 8px 35px}.logo-mark{width:31px;height:31px;border-radius:8px;background:linear-gradient(135deg,#8a70f5,#4f35c8);display:grid;place-items:center;font-size:11px}.nav{display:grid;gap:5px}.nav a{color:#aeb7c8;text-decoration:none;padding:11px 12px;border-radius:9px;font-size:12px;font-weight:750}.nav a:hover,.nav a.active{background:#222b3c;color:#fff}.project-note{position:absolute;left:16px;right:16px;bottom:20px;border:1px solid #2c3749;background:#1a2433;border-radius:12px;padding:12px;font-size:10px;line-height:1.5;color:#aeb7c8}.project-note strong{display:block;color:#fff;margin-bottom:4px}
+main{margin-left:230px;width:calc(100% - 230px);padding:28px 32px 55px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.crumb{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.08em}.period{background:#fff;border:1px solid var(--line);padding:8px 11px;border-radius:8px;color:var(--muted);font-size:11px;font-weight:700}.hero{display:flex;justify-content:space-between;gap:25px;align-items:end;margin-bottom:21px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--purple);font-weight:900}.hero h1{font-size:35px;letter-spacing:-.045em;line-height:1.05;margin:7px 0}.hero p{margin:0;color:var(--muted);font-size:13px;max-width:720px;line-height:1.55}.badge{background:#eee9ff;color:#5c40cf;padding:9px 12px;border-radius:999px;font-size:10px;font-weight:850;white-space:nowrap}
+.filters{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:17px;box-shadow:var(--shadow)}.filter label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:850;margin:0 0 5px}.filter select{width:100%;border:1px solid var(--line);background:#fafbfc;border-radius:8px;padding:9px;font-size:11px;color:var(--ink);outline:none}.filter select:focus{border-color:#9d8ce9}.reset{border:0;border-radius:8px;background:var(--navy);color:#fff;padding:0 15px;font-size:11px;font-weight:800;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.kpi,.card,.insight{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}.kpi{padding:15px}.kpi .label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:850}.kpi .value{font-size:20px;font-weight:900;letter-spacing:-.025em;margin-top:6px}.kpi .sub{font-size:9px;color:var(--muted);margin-top:3px}
+.section{display:flex;justify-content:space-between;align-items:end;margin:26px 0 10px}.section h2{font-size:15px;margin:0}.section span{font-size:10px;color:var(--muted)}.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:13px}.grid.equal{grid-template-columns:1fr 1fr}.card{padding:16px;min-width:0}.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.card-head h3{font-size:13px;margin:0}.card-head span{font-size:9px;color:var(--muted)}.chart{height:280px;position:relative}.chart.tall{height:320px}.chart.small{height:240px}
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.insight{padding:16px}.tag{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);font-weight:900}.insight h3{font-size:14px;margin:7px 0 5px}.insight p{font-size:11px;line-height:1.55;color:var(--muted);margin:0}.insight strong{color:var(--ink)}.status{margin-top:18px;font-size:10px;color:var(--muted)}.error{background:#fff1f3;color:#a42d45;border:1px solid #ffd2da;border-radius:10px;padding:13px;font-size:11px;margin-top:15px}footer{text-align:center;color:var(--muted);font-size:9px;margin-top:28px}
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(3,1fr)}.filters{grid-template-columns:repeat(2,1fr)}.grid,.grid.equal{grid-template-columns:1fr}.insights{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{display:none}main{margin-left:0;width:100%;padding:20px 14px 35px}.hero{display:block}.badge{display:inline-block;margin-top:12px}.top{display:none}.kpis{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr}.hero h1{font-size:30px}}
+</style>
 </head>
-<body>
-<div class="shell">
-  <header>
-    <div><div class="eyebrow">RetailPulse Analytics</div><h1>Decision-ready retail intelligence.</h1><div class="subtitle">An interactive demonstration of the end-to-end analytics workflow: data preparation, KPI analysis and business visualization.</div></div>
-    <div class="badge">Synthetic dataset • Portfolio project</div>
-  </header>
-  <section class="kpis">
-    <div class="card"><div class="label">TOTAL REVENUE</div><div id="revenue" class="value">—</div></div>
-    <div class="card"><div class="label">TOTAL PROFIT</div><div id="profit" class="value">—</div></div>
-    <div class="card"><div class="label">ORDERS</div><div id="orders" class="value">—</div></div>
-    <div class="card"><div class="label">PROFIT MARGIN</div><div id="margin" class="value">—</div></div>
-  </section>
-  <section class="grid">
-    <div class="card"><h2>Revenue & profit trend</h2><canvas id="trend"></canvas></div>
-    <div class="card"><h2>Revenue by category</h2><canvas id="category"></canvas></div>
-  </section>
-  <section class="grid equal">
-    <div class="card"><h2>Regional performance</h2><canvas id="region"></canvas></div>
-    <div class="card"><h2>Sales channel mix</h2><canvas id="channel"></canvas></div>
-  </section>
-  <section class="card" style="margin-top:16px"><h2>Top products by revenue</h2><canvas id="products"></canvas></section>
-  <footer>RetailPulse Analytics • Built for academic and portfolio demonstration • Data is synthetic and reproducible.</footer>
-</div>
+<body><div class="app">
+<aside class="sidebar"><div class="logo"><div class="logo-mark">RP</div>RetailPulse</div><nav class="nav"><a class="active" href="#overview">Executive Overview</a><a href="#sales">Sales Intelligence</a><a href="#customers">Customer & Segments</a><a href="#profitability">Profitability</a><a href="#operations">Operations</a><a href="#insights">Recommendations</a></nav><div class="project-note"><strong>45-day internship case study</strong>End-to-end analytics workflow using Excel concepts, SQL, Python and Power BI-style reporting. Dataset is synthetic for academic demonstration.</div></aside>
+<main>
+<div class="top"><div class="crumb">DATA ANALYTICS / BUSINESS INTELLIGENCE / EXECUTIVE VIEW</div><div class="period">01 JAN 2025 — 20 JUN 2026</div></div>
+<section id="overview" class="hero"><div><div class="eyebrow">RetailPulse Analytics</div><h1>Retail performance, explained.</h1><p>A decision-oriented analytics case study that turns transaction data into validated KPIs, performance diagnostics and management recommendations.</p></div><div class="badge">● SYNTHETIC DATA · REPRODUCIBLE</div></section>
+<section class="filters"><div class="filter"><label>Region</label><select id="regionFilter"></select></div><div class="filter"><label>Category</label><select id="categoryFilter"></select></div><div class="filter"><label>Customer segment</label><select id="segmentFilter"></select></div><div class="filter"><label>Channel</label><select id="channelFilter"></select></div><button class="reset" id="reset">Reset</button></section>
+<section class="kpis"><div class="kpi"><div class="label">Revenue</div><div id="revenue" class="value">—</div><div class="sub">Completed sales</div></div><div class="kpi"><div class="label">Profit</div><div id="profit" class="value">—</div><div class="sub">Realized profit</div></div><div class="kpi"><div class="label">Orders</div><div id="orders" class="value">—</div><div class="sub">Completed orders</div></div><div class="kpi"><div class="label">Customers</div><div id="customers" class="value">—</div><div class="sub">Unique buyers</div></div><div class="kpi"><div class="label">AOV</div><div id="aov" class="value">—</div><div class="sub">Average order value</div></div><div class="kpi"><div class="label">Margin</div><div id="margin" class="value">—</div><div class="sub">Profit / revenue</div></div></section>
+<div id="sales" class="section"><h2>Sales intelligence</h2><span>Trend, mix and ranking</span></div><section class="grid"><div class="card"><div class="card-head"><h3>Monthly revenue & profit</h3><span>Performance trend</span></div><div class="chart"><canvas id="trend"></canvas></div></div><div class="card"><div class="card-head"><h3>Revenue by category</h3><span>Contribution</span></div><div class="chart"><canvas id="category"></canvas></div></div></section>
+<section class="grid equal" style="margin-top:13px"><div class="card"><div class="card-head"><h3>Regional scorecard</h3><span>Revenue vs profit</span></div><div class="chart"><canvas id="region"></canvas></div></div><div class="card"><div class="card-head"><h3>Channel contribution</h3><span>Completed sales</span></div><div class="chart"><canvas id="channel"></canvas></div></div></section>
+<div id="customers" class="section"><h2>Customer & segment intelligence</h2><span>Commercial reach and basket economics</span></div><section class="grid equal"><div class="card"><div class="card-head"><h3>Segment performance</h3><span>Sales, profit & orders</span></div><div class="chart"><canvas id="segment"></canvas></div></div><div class="card"><div class="card-head"><h3>Top products</h3><span>Revenue ranking</span></div><div class="chart"><canvas id="products"></canvas></div></div></section>
+<div id="profitability" class="section"><h2>Profitability diagnostics</h2><span>Growth quality, not just sales volume</span></div><section class="grid equal"><div class="card"><div class="card-head"><h3>Discount bands vs margin</h3><span>Completed orders</span></div><div class="chart"><canvas id="discount"></canvas></div></div><div class="card"><div class="card-head"><h3>Category margin matrix</h3><span>Revenue and profitability</span></div><div class="chart"><canvas id="marginChart"></canvas></div></div></section>
+<div id="operations" class="section"><h2>Operational view</h2><span>Raw order-status population</span></div><section class="card"><div class="card-head"><h3>Order status</h3><span>Returned and cancelled records remain visible for diagnosis</span></div><div class="chart small"><canvas id="status"></canvas></div></section>
+<div id="insights" class="section"><h2>Management recommendations</h2><span>Generated from the current filtered view</span></div><section class="insights"><article class="insight"><div class="tag">01 · Category</div><h3 id="i1title">Loading…</h3><p id="i1text">Calculating the strongest category signal from the selected population.</p></article><article class="insight"><div class="tag">02 · Region</div><h3 id="i2title">Loading…</h3><p id="i2text">Calculating regional contribution and profitability.</p></article><article class="insight"><div class="tag">03 · Customer</div><h3 id="i3title">Loading…</h3><p id="i3text">Calculating segment-level basket economics.</p></article></section>
+<div id="error" style="display:none"></div><div class="status">Method note: realized KPIs use Completed orders. Returned and Cancelled records are retained for operational analysis, consistent with the project methodology.</div><footer>RetailPulse Analytics · 45-day Data Analytics Internship Case Study · Synthetic data · Excel · SQL · Python · Power BI</footer>
+</main></div>
 <script>
-const money = n => '₹' + new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(n);
-const common = { responsive:true, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>money(v)}}} };
-Promise.all([fetch('/api/summary').then(r=>r.json()), fetch('/api/charts').then(r=>r.json())]).then(([s,d])=>{
-  document.querySelector('#revenue').textContent=money(s.revenue); document.querySelector('#profit').textContent=money(s.profit); document.querySelector('#orders').textContent=s.orders.toLocaleString('en-IN'); document.querySelector('#margin').textContent=s.margin+'%';
-  new Chart(document.getElementById('trend'),{type:'line',data:{labels:d.monthly.map(x=>x.month),datasets:[{label:'Revenue',data:d.monthly.map(x=>x.revenue),tension:.3},{label:'Profit',data:d.monthly.map(x=>x.profit),tension:.3}]},options:common});
-  new Chart(document.getElementById('category'),{type:'bar',data:{labels:d.category.map(x=>x.category),datasets:[{label:'Revenue',data:d.category.map(x=>x.revenue)}]},options:{...common,indexAxis:'y'}});
-  new Chart(document.getElementById('region'),{type:'bar',data:{labels:d.region.map(x=>x.region),datasets:[{label:'Revenue',data:d.region.map(x=>x.revenue)},{label:'Profit',data:d.region.map(x=>x.profit)}]},options:common});
-  new Chart(document.getElementById('channel'),{type:'doughnut',data:{labels:d.channel.map(x=>x.channel),datasets:[{data:d.channel.map(x=>x.revenue)}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
-  new Chart(document.getElementById('products'),{type:'bar',data:{labels:d.products.map(x=>x.product_name),datasets:[{label:'Revenue',data:d.products.map(x=>x.revenue)}]},options:{...common,indexAxis:'y'}});
-}).catch(err=>console.error(err));
-</script>
-</body>
-</html>
+const $=id=>document.getElementById(id), money=n=>'₹'+new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(Number(n)||0), n=x=>Number(x)||0;
+let charts={};
+const palette=['#2563eb','#7354e8','#0f9f6e','#e2556d','#e59a18','#4d9de0','#9b72cf','#48a999'];
+const scale={x:{grid:{display:false},ticks:{font:{size:9},color:'#737c8d'}},y:{beginAtZero:true,grid:{color:'rgba(90,100,120,.09)'},ticks:{font:{size:9},color:'#737c8d',maxTicksLimit:6,callback:v=>money(v)}}};
+const plugins={legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:7,padding:14,font:{size:9}}}};
+function destroy(){Object.values(charts).forEach(c=>c.destroy());charts={}}
+function query(){let p=new URLSearchParams();[['regionFilter','region'],['categoryFilter','category'],['segmentFilter','segment'],['channelFilter','channel']].forEach(([a,b])=>{if($(a).value&&$(a).value!=='All')p.set(b,$(a).value)});return p.toString()}
+async function load(){try{const qs=query();const [s,d,i]=await Promise.all([fetch('/api/summary?'+qs,{cache:'no-store'}).then(r=>r.json()),fetch('/api/charts?'+qs,{cache:'no-store'}).then(r=>r.json()),fetch('/api/insights?'+qs,{cache:'no-store'}).then(r=>r.json())]);
+$('revenue').textContent=money(s.revenue);$('profit').textContent=money(s.profit);$('orders').textContent=n(s.orders).toLocaleString('en-IN');$('customers').textContent=n(s.customers).toLocaleString('en-IN');$('aov').textContent=money(s.aov);$('margin').textContent=n(s.margin).toFixed(1)+'%';
+$('i1title').textContent=i.items?.[0]?.title||'No category signal';$('i1text').textContent=i.items?.[0]?.text||'Try another filter.';$('i2title').textContent=i.items?.[1]?.title||'No regional signal';$('i2text').textContent=i.items?.[1]?.text||'Try another filter.';$('i3title').textContent=i.items?.[2]?.title||'No customer signal';$('i3text').textContent=i.items?.[2]?.text||'Try another filter.';
+destroy();
+let m=d.monthly||[];charts.trend=new Chart($('trend'),{type:'line',data:{labels:m.map(x=>x.Month),datasets:[{label:'Revenue',data:m.map(x=>n(x.revenue)),borderColor:palette[0],backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.3,pointRadius:2,borderWidth:2},{label:'Profit',data:m.map(x=>n(x.profit)),borderColor:palette[3],tension:.3,pointRadius:2,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins,scales:{...scale,x:{...scale.x,ticks:{...scale.x.ticks,maxRotation:45,minRotation:45}}}}});
+let c=d.category||[];charts.category=new Chart($('category'),{type:'bar',data:{labels:c.map(x=>x.Category),datasets:[{label:'Revenue',data:c.map(x=>n(x.revenue)),backgroundColor:palette[1],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{...plugins,legend:{display:false}},scales:{x:scale.y,y:scale.x}}});
+let r=d.region||[];charts.region=new Chart($('region'),{type:'bar',data:{labels:r.map(x=>x.Region),datasets:[{label:'Revenue',data:r.map(x=>n(x.revenue)),backgroundColor:palette[0],borderRadius:4},{label:'Profit',data:r.map(x=>n(x.profit)),backgroundColor:palette[3],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins,scales:scale}});
+let ch=d.channel||[];charts.channel=new Chart($('channel'),{type:'doughnut',data:{labels:ch.map(x=>x.Channel),datasets:[{data:ch.map(x=>n(x.revenue)),backgroundColor:palette.slice(0,3),borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins}});
+let sg=d.segment||[];charts.segment=new Chart($('segment'),{type:'bar',data:{labels:sg.map(x=>x.Customer_Segment),datasets:[{label:'Revenue',data:sg.map(x=>n(x.revenue)),backgroundColor:palette[1],borderRadius:4},{label:'Profit',data:sg.map(x=>n(x.profit)),backgroundColor:palette[2],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins,scales:scale}});
+let p=d.products||[];charts.products=new Chart($('products'),{type:'bar',data:{labels:p.map(x=>x.Product),datasets:[{label:'Revenue',data:p.map(x=>n(x.revenue)),backgroundColor:palette[0],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{...plugins,legend:{display:false}},scales:{x:scale.y,y:scale.x}}});
+let disc=d.discount||[];charts.discount=new Chart($('discount'),{type:'bar',data:{labels:disc.map(x=>x.discount_band),datasets:[{label:'Margin %',data:disc.map(x=>n(x.margin)),backgroundColor:palette[4],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins,scales:{x:scale.x,y:{beginAtZero:true,grid:{color:'rgba(90,100,120,.09)'},ticks:{font:{size:9},callback:v=>v+'%'}}}}});
+let mc=d.category||[];charts.marginChart=new Chart($('marginChart'),{type:'scatter',data:{datasets:[{label:'Categories',data:mc.map(x=>({x:n(x.revenue),y:n(x.margin),label:x.Category})),backgroundColor:palette[2],pointRadius:7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.label}: ${money(c.raw.x)} revenue, ${n(c.raw.y).toFixed(1)}% margin`}}},scales:{x:{title:{display:true,text:'Revenue',font:{size:9}},ticks:{font:{size:9},callback:v=>money(v)},grid:{color:'rgba(90,100,120,.09)'}},y:{title:{display:true,text:'Margin %',font:{size:9}},ticks:{font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(90,100,120,.09)'},beginAtZero:true}}}});
+let st=d.status||[];charts.status=new Chart($('status'),{type:'bar',data:{labels:st.map(x=>x.Order_Status),datasets:[{label:'Orders',data:st.map(x=>n(x.orders)),backgroundColor:st.map(x=>x.Order_Status==='Completed'?palette[2]:x.Order_Status==='Returned'?palette[4]:palette[3]),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...plugins,legend:{display:false}},scales:scale}});
+}catch(e){console.error(e);$('error').style.display='block';$('error').innerHTML='<div class="error"><strong>Dashboard error.</strong> The API could not render the selected view. Refresh once; if it persists, inspect the data pipeline before publishing.</div>'}}
+async function init(){try{const f=await fetch('/api/filters').then(r=>r.json());[['regionFilter','regions'],['categoryFilter','categories'],['segmentFilter','segments'],['channelFilter','channels']].forEach(([id,key])=>{f[key].forEach(v=>{let o=document.createElement('option');o.value=v;o.textContent=v;$(id).appendChild(o)})});document.querySelectorAll('select').forEach(x=>x.addEventListener('change',load));$('reset').onclick=()=>{document.querySelectorAll('select').forEach(x=>x.value='All');load()};load()}catch(e){$('error').style.display='block';$('error').innerHTML='<div class="error">Could not load dashboard filters.</div>'}}
+init();
+</script></body></html>
